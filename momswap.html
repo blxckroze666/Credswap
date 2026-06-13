@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MomSwap — Time Credits for Moms</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --plum: #4A1942;
+    --soft-gold: #D4A853;
+    --blush: #F5E6E8;
+    --deep-rose: #C46B7A;
+    --cream: #FDF8F4;
+    --ink: #1A1018;
+    --muted: #8A7A86;
+    --card: #FFFFFF;
+    --border: #EAD9DC;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+  nav {
+    background: var(--plum);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; color: var(--soft-gold); font-size: 1.3rem; }
+  .nav-credits {
+    background: var(--soft-gold);
+    color: var(--plum);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, var(--plum) 0%, #6B2460 100%);
+    color: white;
+    padding: 36px 20px 28px;
+    text-align: center;
+  }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 1.9rem; line-height: 1.2; margin-bottom: 10px; }
+  .hero h1 span { color: var(--soft-gold); }
+  .hero p { font-size: 0.9rem; color: rgba(255,255,255,0.8); max-width: 320px; margin: 0 auto 20px; line-height: 1.5; }
+  .credit-display {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(212,168,83,0.4);
+    border-radius: 16px;
+    padding: 16px 24px;
+    display: inline-block;
+  }
+  .credit-display .big { font-size: 2.8rem; font-weight: 700; color: var(--soft-gold); line-height: 1; }
+  .credit-display .label { font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 2px; }
+
+  .tabs {
+    display: flex;
+    background: var(--card);
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    flex: 1;
+    min-width: 70px;
+    padding: 14px 8px;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab.active { color: var(--plum); border-bottom-color: var(--plum); font-weight: 600; }
+  .tab-icon { font-size: 1.1rem; display: block; margin-bottom: 2px; }
+
+  .section { display: none; padding: 20px 16px; }
+  .section.active { display: block; }
+
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(74,25,66,0.06);
+  }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .mom-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--plum); font-weight: 700; }
+  .credits-badge { background: var(--blush); color: var(--deep-rose); font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 12px; }
+  .swap-detail { font-size: 0.85rem; color: var(--ink); line-height: 1.5; margin-bottom: 4px; }
+  .swap-meta { font-size: 0.78rem; color: var(--muted); margin: 6px 0 12px; font-style: italic; }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 24px;
+    border: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--plum); color: white; }
+  .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+  .btn-gold { background: var(--soft-gold); color: var(--plum); display: inline-block; width: auto; }
+
+  .form-group { margin-bottom: 16px; }
+  label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--plum); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  input, select, textarea {
+    width: 100%; padding: 12px 14px; border: 2px solid var(--border);
+    border-radius: 12px; font-size: 0.9rem; font-family: 'Inter', sans-serif;
+    background: var(--cream); color: var(--ink); outline: none; transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--plum); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--plum); margin-bottom: 4px; }
+  .section-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 18px; line-height: 1.4; }
+
+  .step { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 16px; }
+  .step-num {
+    background: var(--plum); color: var(--soft-gold); width: 34px; height: 34px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+  }
+  .step-text { font-size: 0.88rem; line-height: 1.5; padding-top: 6px; }
+  .step-text strong { color: var(--plum); }
+
+  .history-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem;
+  }
+  .history-item:last-child { border-bottom: none; }
+  .earned { color: #2a9d54; font-weight: 600; }
+  .spent { color: var(--deep-rose); font-weight: 600; }
+
+  .rank-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .rank-item:last-child { border-bottom: none; }
+  .rank-num {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--blush);
+    color: var(--plum); display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+  }
+  .rank-num.gold { background: var(--soft-gold); }
+  .rank-name { flex: 1; font-weight: 500; font-size: 0.9rem; }
+  .rank-credits { color: var(--deep-rose); font-weight: 600; font-size: 0.85rem; }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-state .emoji { font-size: 2.5rem; margin-bottom: 10px; }
+  .empty-state p { font-size: 0.88rem; line-height: 1.6; }
+
+  .tip-box {
+    background: rgba(212,168,83,0.12);
+    border-left: 4px solid var(--soft-gold);
+    border-radius: 0 12px 12px 0;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    font-size: 0.82rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  #toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--plum); color: white;
+    padding: 12px 24px; border-radius: 24px;
+    font-size: 0.88rem; font-weight: 500;
+    z-index: 999; transition: transform 0.3s ease;
+    white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  .profile-setup {
+    background: var(--blush);
+    border: 2px solid var(--deep-rose);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+  .profile-setup p { font-size: 0.88rem; color: var(--plum); margin-bottom: 14px; font-weight: 500; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">MomSwap 💜</div>
+  <div class="nav-credits" onclick="showTab('history')">⏳ <span id="nav-credits">0</span> credits</div>
+</nav>
+
+<div class="hero">
+  <h1>Your time matters.<br><span>Swap it wisely.</span></h1>
+  <p>Trade childcare hours with trusted moms in Christine's community — no money, just time.</p>
+  <div class="credit-display">
+    <div class="big" id="hero-credits">0</div>
+    <div class="label">Time Credits Available</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('browse')"><span class="tab-icon">🔍</span>Browse</div>
+  <div class="tab" onclick="showTab('offer')"><span class="tab-icon">➕</span>Offer</div>
+  <div class="tab" onclick="showTab('history')"><span class="tab-icon">⏱️</span>Credits</div>
+  <div class="tab" onclick="showTab('leaderboard')"><span class="tab-icon">🏆</span>Board</div>
+  <div class="tab" onclick="showTab('how')"><span class="tab-icon">💡</span>How</div>
+</div>
+
+<!-- BROWSE -->
+<div id="tab-browse" class="section active">
+  <p class="section-title">Available Swaps</p>
+  <p class="section-sub">Claim a swap to spend your credits and get free time for yourself.</p>
+  <div id="swap-list"></div>
+</div>
+
+<!-- OFFER -->
+<div id="tab-offer" class="section">
+  <p class="section-title">Post a Swap Offer</p>
+  <p class="section-sub">Offer to take extra kids and earn time credits in return.</p>
+
+  <div id="profile-setup" class="profile-setup" style="display:none">
+    <p>👋 Before you post, let the community know who you are!</p>
+    <div class="form-group">
+      <label>Your First Name</label>
+      <input type="text" id="setup-name" placeholder="e.g. Sarah">
+    </div>
+    <div class="form-group">
+      <label>Your Neighborhood or Area</label>
+      <input type="text" id="setup-area" placeholder="e.g. Federal Way, Northside">
+    </div>
+    <button class="btn btn-primary" onclick="saveProfile()">Save & Continue</button>
+  </div>
+
+  <div id="offer-form" style="display:none">
+    <div class="tip-box">Every hour you offer = 1 Time Credit you earn to spend on your own free time.</div>
+    <div class="form-group">
+      <label>Day & Time</label>
+      <input type="text" id="offer-day" placeholder="e.g. Tuesday July 8 · 10am–12pm">
+    </div>
+    <div class="form-group">
+      <label>How many extra kids can you take?</label>
+      <select id="offer-kids">
+        <option value="1">1 extra kid</option>
+        <option value="2" selected>2 extra kids</option>
+        <option value="3">3 extra kids</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Location (neighborhood is fine)</label>
+      <input type="text" id="offer-location" placeholder="e.g. Steel Lake Park, Federal Way">
+    </div>
+    <div class="form-group">
+      <label>Duration</label>
+      <select id="offer-hours">
+        <option value="1">1 hour = 1 credit</option>
+        <option value="2" selected>2 hours = 2 credits</option>
+        <option value="3">3 hours = 3 credits</option>
+        <option value="4">4 hours = 4 credits</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Any notes for other moms?</label>
+      <textarea id="offer-notes" placeholder="e.g. Going to the park, ages 3–7 welcome, bring snacks"></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="postOffer()">Post My Offer ✨</button>
+  </div>
+</div>
+
+<!-- CREDITS / HISTORY -->
+<div id="tab-history" class="section">
+  <p class="section-title">Your Credit Wallet</p>
+  <p class="section-sub">Time you give = time you get back.</p>
+  <div class="card" style="text-align:center;padding:24px">
+    <div style="font-size:3rem;font-weight:700;color:var(--plum);font-family:'Playfair Display',serif" id="wallet-count">0</div>
+    <div style="font-size:0.85rem;color:var(--muted);margin-top:4px">Time Credits</div>
+    <div style="margin-top:12px;font-size:0.8rem;color:var(--muted)">= <span id="wallet-hours">0</span> hours of free creative time earned</div>
+  </div>
+  <div class="card">
+    <p style="font-weight:600;font-size:0.9rem;color:var(--plum);margin-bottom:12px">Transaction History</p>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<!-- LEADERBOARD -->
+<div id="tab-leaderboard" class="section">
+  <p class="section-title">Community Board 🏆</p>
+  <p class="section-sub">The moms who give the most time get celebrated here — and earn the most free time back.</p>
+  <div class="card">
+    <div id="leaderboard-list"></div>
+  </div>
+  <div class="tip-box" style="margin-top:16px">
+    💜 Christine shares this board in the Skool group every week so the community can celebrate each other.
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div id="tab-how" class="section">
+  <p class="section-title">How MomSwap Works</p>
+  <p class="section-sub">No money. No apps to pay for. Just moms in Christine's group helping each other.</p>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text"><strong>Post what you can offer.</strong> Share when you're heading to the park or hosting a playdate and can take 1–3 extra kids with you.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text"><strong>Earn Time Credits.</strong> For every hour you watch kids, you earn 1 Time Credit — added to your wallet instantly.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-text"><strong>Spend credits for your own time.</strong> Browse other moms' offers and use your credits to book a swap — giving you uninterrupted hours to create, rest, or just breathe.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-text"><strong>Coordinate in Skool.</strong> Once a swap is claimed, DM each other inside Christine's group to confirm the details. This tool handles the credits — the community handles the trust.</div>
+  </div>
+  <div class="card" style="background:var(--plum);color:white;text-align:center;margin-top:8px">
+    <p style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:8px">Part of Christine's Community</p>
+    <p style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-bottom:16px">MomSwap is a free perk exclusively for members of <em>Creativity & Clarity for Moms</em>.</p>
+    <a href="#" class="btn btn-gold" style="display:inline-block;width:auto">Join the Skool Group →</a>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  function loadState() {
+    const raw = localStorage.getItem('momswap');
+    if (raw) return JSON.parse(raw);
+    return { name: '', area: '', credits: 0, history: [], swaps: [], leaderboard: [] };
+  }
+
+  function saveState() {
+    localStorage.setItem('momswap', JSON.stringify(state));
+  }
+
+  let state = loadState();
+
+  function updateCreditsDisplay() {
+    document.getElementById('hero-credits').textContent = state.credits;
+    document.getElementById('nav-credits').textContent = state.credits;
+    document.getElementById('wallet-count').textContent = state.credits;
+    document.getElementById('wallet-hours').textContent = state.credits;
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  function showTab(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    const tabs = ['browse','offer','history','leaderboard','how'];
+    document.querySelectorAll('.tab')[tabs.indexOf(name)].classList.add('active');
+    if (name === 'browse') renderSwaps();
+    if (name === 'history') renderHistory();
+    if (name === 'leaderboard') renderLeaderboard();
+    if (name === 'offer') checkProfile();
+  }
+
+  function checkProfile() {
+    if (!state.name) {
+      document.getElementById('profile-setup').style.display = 'block';
+      document.getElementById('offer-form').style.display = 'none';
+    } else {
+      document.getElementById('profile-setup').style.display = 'none';
+      document.getElementById('offer-form').style.display = 'block';
+    }
+  }
+
+  function saveProfile() {
+    const n = document.getElementById('setup-name').value.trim();
+    const a = document.getElementById('setup-area').value.trim();
+    if (!n) { toast('Please enter your name'); return; }
+    state.name = n;
+    state.area = a;
+    saveState();
+    checkProfile();
+    toast('Welcome, ' + n + '! 💜');
+  }
+
+  function renderSwaps() {
+    const list = document.getElementById('swap-list');
+    const available = state.swaps.filter(s => s.available);
+    if (!available.length) {
+      list.innerHTML = `<div class="empty-state"><div class="emoji">🌸</div><p>No swaps posted yet.<br><br>Be the first — post an offer and earn your first credits!</p></div>`;
+      return;
+    }
+    list.innerHTML = available.map(s => `
+      <div class="card">
+        <div class="card-header">
+          <div class="mom-name">${s.name}</div>
+          <div class="credits-badge">-${s.hours} credits</div>
+        </div>
+        <div class="swap-detail">📅 ${s.day}</div>
+        <div class="swap-detail">📍 ${s.location}</div>
+        <div class="swap-detail">👧 ${s.kids} extra kid${s.kids > 1 ? 's' : ''} · ${s.hours} hr${s.hours > 1 ? 's' : ''}</div>
+        ${s.notes ? `<div class="swap-meta">"${s.notes}"</div>` : ''}
+        <button class="btn btn-primary" onclick="claimSwap('${s.id}')" ${state.credits < s.hours ? 'disabled' : ''}>
+          ${state.credits < s.hours ? 'Not enough credits yet' : 'Claim This Swap ✨'}
+        </button>
+      </div>
+    `).join('');
+  }
+
+  function claimSwap(id) {
+    const swap = state.swaps.find(s => s.id === id);
+    if (!swap || !swap.available) return;
+    if (state.credits < swap.hours) { toast('Not enough credits!'); return; }
+    state.credits -= swap.hours;
+    swap.available = false;
+    state.history.unshift({ type: 'spent', desc: 'Claimed swap with ' + swap.name, credits: swap.hours, date: today() });
+    saveState();
+    updateCreditsDisplay();
+    renderSwaps();
+    toast('Swap claimed! DM ' + swap.name + ' in the Skool group to confirm 💜');
+  }
+
+  function postOffer() {
+    const day = document.getElementById('offer-day').value.trim();
+    const kids = parseInt(document.getElementById('offer-kids').value);
+    const location = document.getElementById('offer-location').value.trim();
+    const hours = parseInt(document.getElementById('offer-hours').value);
+    const notes = document.getElementById('offer-notes').value.trim();
+    if (!day || !location) { toast('Please fill in day and location'); return; }
+
+    const swap = { id: Date.now().toString(), name: state.name, area: state.area, day, kids, location, hours, notes, available: true };
+    state.swaps.unshift(swap);
+    state.credits += hours;
+    state.history.unshift({ type: 'earned', desc: 'Posted swap offer · ' + day, credits: hours, date: today() });
+
+    const lb = state.leaderboard.find(l => l.name === state.name);
+    if (lb) { lb.credits += hours; } else { state.leaderboard.push({ name: state.name, credits: hours }); }
+
+    saveState();
+    updateCreditsDisplay();
+
+    document.getElementById('offer-day').value = '';
+    document.getElementById('offer-location').value = '';
+    document.getElementById('offer-notes').value = '';
+
+    toast('Offer posted! You earned ' + hours + ' credit' + (hours > 1 ? 's' : '') + ' 💜');
+    showTab('browse');
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('history-list');
+    if (!state.history.length) {
+      list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;text-align:center;padding:20px 0">No transactions yet. Post a swap to earn your first credits!</p>';
+      return;
+    }
+    list.innerHTML = state.history.map(h => `
+      <div class="history-item">
+        <div>
+          <div style="font-weight:500">${h.desc}</div>
+          <div style="font-size:0.75rem;color:var(--muted)">${h.date}</div>
+        </div>
+        <div class="${h.type === 'earned' ? 'earned' : 'spent'}">${h.type === 'earned' ? '+' : '-'}${h.credits}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderLeaderboard() {
+    const list = document.getElementById('leaderboard-list');
+    if (!state.leaderboard.length) {
+      list.innerHTML = '<div class="empty-state"><div class="emoji">🏆</div><p>The board fills up as moms post swaps.<br>Be the first name up here!</p></div>';
+      return;
+    }
+    const sorted = [...state.leaderboard].sort((a,b) => b.credits - a.credits);
+    list.innerHTML = sorted.map((l, i) => `
+      <div class="rank-item">
+        <div class="rank-num ${i === 0 ? 'gold' : ''}">${i === 0 ? '👑' : i + 1}</div>
+        <div class="rank-name">${l.name}</div>
+        <div class="rank-credits">${l.credits} credits given</div>
+      </div>
+    `).join('');
+  }
+
+  function today() {
+    return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  // init
+  updateCreditsDisplay();
+  renderSwaps();
+</script>
+</body>
+</html>
